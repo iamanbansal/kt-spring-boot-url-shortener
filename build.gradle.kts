@@ -16,8 +16,17 @@ repositories {
 	mavenCentral()
 }
 
-springBoot {
-	mainClass.set("url.shortener.UrlShortenerApplicationKt")
+tasks.withType<Jar> {
+	manifest {
+		attributes["Main-Class"] = "url.shortener.UrlShortenerApplicationKt"
+	}
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	from(sourceSets.main.get().output)
+	dependsOn(configurations.runtimeClasspath)
+	from({
+		configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+	})
+
 }
 
 dependencies {
