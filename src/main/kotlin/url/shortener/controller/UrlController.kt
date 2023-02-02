@@ -1,5 +1,8 @@
 package url.shortener.controller
 
+import jakarta.servlet.http.HttpServletRequest
+import kotlinx.html.*
+import kotlinx.html.stream.createHTML
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -16,7 +19,37 @@ class UrlController(val urlService: UrlService) {
 
     @GetMapping
     fun getHomePage(): String {
-        return "Landing Page"
+
+        return createHTML(true).html {
+            head {
+                title {
+                    +"Welcome to URL Shortener"
+                }
+            }
+            body {
+                form(
+                    action = "result",
+                    method = FormMethod.post,
+                ) {
+                    label {
+                        input(
+                            type = InputType.url,
+                            name = "longUrl",
+                        ) {
+                            placeholder = "Enter your url"
+                            required = true
+                        }
+                    }
+
+                    button(
+                        classes = "primary",
+                        type = ButtonType.submit,
+                    ) {
+                        +"Shorten"
+                    }
+                }
+            }
+        }
     }
 
     @GetMapping("/{shortUrl}")
@@ -28,8 +61,7 @@ class UrlController(val urlService: UrlService) {
     }
 
     @PostMapping("/createUrl")
-    fun createUrl(@RequestBody url: Url): ResponseEntity<HttpResponse<Url>> {
-
+    fun createUrl(@RequestBody url: Url, request: HttpServletRequest): ResponseEntity<HttpResponse<Url>> {
         try {
             URL(url.longUrl)
         } catch (e: MalformedURLException) {
@@ -42,14 +74,35 @@ class UrlController(val urlService: UrlService) {
         }
 
         val createdUrl = urlService.createShortUrl(url.longUrl!!)
+        val shortUrl = generateUrl(createdUrl, request)
 
         return ResponseEntity.ok(
             HttpResponse(
                 statusCode = HttpStatus.OK.value(),
-                body = createdUrl
+                body = createdUrl.copy(shortUrl =  shortUrl)
             )
         )
     }
 
+    @PostMapping("/result")
+    fun createUrlForm(@ModelAttribute("userFormData") url: Url, request: HttpServletRequest): String {
 
+        val createdUrl = urlService.createShortUrl(url.longUrl!!)
+        val shortUrl = generateUrl(createdUrl, request)
+        return createHTML(true).html {
+            body {
+                p {
+                    +"Short url is: "
+                    this.a(href = shortUrl) {
+                        +shortUrl
+                    }
+
+                }
+            }
+        }
+    }
+
+    private fun generateUrl(url: Url, request: HttpServletRequest): String {
+        return "${request.scheme}://${request.serverName}:${request.serverPort}/${url.shortUrl}"
+    }
 }
