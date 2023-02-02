@@ -16,6 +16,10 @@ repositories {
 	mavenCentral()
 }
 
+springBoot {
+	mainClass.set("url.shortener.UrlShortenerApplicationKt")
+}
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
