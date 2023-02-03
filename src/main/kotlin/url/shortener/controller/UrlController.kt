@@ -52,6 +52,11 @@ class UrlController(val urlService: UrlService) {
         }
     }
 
+    @GetMapping("/urls")
+    fun getAllUrls(): List<Url> {
+       return urlService.getAllUrls()
+    }
+
     @GetMapping("/{shortUrl}")
     fun redirectUrl(@PathVariable shortUrl: String): ResponseEntity<Void> {
         val longUrl = urlService.getLongUrl(shortUrl)

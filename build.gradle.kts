@@ -21,8 +21,6 @@ tasks.withType<Jar> {
 		attributes["Main-Class"] = "url.shortener.UrlShortenerApplicationKt"
 	}
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-	from(sourceSets.main.get().output)
-	dependsOn(configurations.runtimeClasspath)
 	from({
 		configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
 	})
@@ -35,7 +33,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-	runtimeOnly("org.postgresql:postgresql")
+	implementation("org.postgresql:postgresql")
 	val kotlinxHtmlVersion = "0.8.0"
 	implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:$kotlinxHtmlVersion")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

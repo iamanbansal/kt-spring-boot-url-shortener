@@ -12,13 +12,14 @@ class UrlServiceImpl @Autowired constructor(
     private val urlRepository: UrlRepository,
     private val baseConversion: BaseConversion
 ) : UrlService {
+
     override fun getLongUrl(shortUrl: String): String? {
         val longUrl = urlRepository.findByShortUrl(shortUrl)
         return longUrl?.longUrl
     }
 
     override fun createShortUrl(url: String): Url {
-        val dbUrl = urlRepository.findByShortUrl(url)
+        val dbUrl = urlRepository.findByLongUrl(url)
         if (dbUrl != null) {
             return dbUrl
         }
@@ -30,5 +31,9 @@ class UrlServiceImpl @Autowired constructor(
         val base62 = baseConversion.encode(savedUrl.id!!)
 
         return urlRepository.save(savedUrl.copy(shortUrl = base62))
+    }
+
+    override fun getAllUrls(): List<Url> {
+        return urlRepository.findAll()
     }
 }
