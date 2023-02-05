@@ -16,17 +16,6 @@ repositories {
 	mavenCentral()
 }
 
-tasks.withType<Jar> {
-	manifest {
-		attributes["Main-Class"] = "url.shortener.UrlShortenerApplicationKt"
-	}
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-	from({
-		configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
-	})
-
-}
-
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")

@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5332/urlshortener
-    username: amanbansal
-    password: password
+    url: jdbc:postgresql://${{ PGUSER }}:${{ PGPASSWORD }}@${{ PGHOST }}:${{ PGPORT }}/${{ PGDATABASE }}
+    username: ${{ PGUSER }}
+    password: ${{ PGPASSWORD }}
     driverClassName: org.postgresql.Driver
   jpa:
     hibernate:
