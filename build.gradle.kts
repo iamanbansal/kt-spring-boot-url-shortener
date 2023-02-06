@@ -15,6 +15,12 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 repositories {
 	mavenCentral()
 }
+tasks.jar {
+	enabled = false
+}
+tasks.bootJar{
+	archiveFileName.set("app.jar")
+}
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
